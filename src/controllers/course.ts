@@ -20,3 +20,12 @@ export const findAllLectures = async () => {
     throw new Error("Failed to fetch lectures");
   }
 };
+export const findUserCourses = async (user: any) => {
+  try {
+    const courses = await CourseModel.find({ instructor: user._id });
+    return courses;
+  } catch (error) {
+    console.error("Error finding user courses:", error);
+    throw new Error("Failed to fetch user courses");
+  }
+}

@@ -1,22 +1,11 @@
-
-  import express from "express"
   import { ApolloServer } from "@apollo/server";
   import { startStandaloneServer } from "@apollo/server/standalone";
-
-import helmet from "helmet"
-import { connectGraphQL } from "@/graphql/graphql.js"
-import { expressMiddleware } from "@as-integrations/express5";
-import cors from 'cors'
-import { errorMiddleware } from "@/middlewares/error.js"
-import morgan from "morgan"
-import { createRedis } from "@/lib/redis.js";
-import { rateLimiter } from "@/middlewares/rate-limiter.js";
 import dotenv from "dotenv"
 import { schema } from "./graphql/schema/schema";
 import { ConnectToDatabase } from "./db";
 import UserModel from "./models/user.model";
 import { findAllUsers } from "./controllers/users";
-import { findAllCourses, findAllLectures, findCourseById } from "./controllers/course";
+import { findAllCourses, findAllLectures, findCourseById, findUserCourses } from "./controllers/course";
   
   dotenv.config({path: './.env',});
   
@@ -37,12 +26,27 @@ const server = new ApolloServer({
       course: findCourseById, 
       lectures: findAllLectures,
     },
+    User:{
+ courses: findUserCourses
+    },
     Course: {
       instructor: async (parent) => {
         const user = await UserModel.findById(parent.instructor);
         return user;
       },
     },
+ 
+      Lecture:{
+        videoUrl: (parent) => {
+          console.log(parent.videoUrl);
+          
+          return {
+            _480p: parent.videoUrl._480p,
+            _720p: parent.videoUrl._720p,
+            _1080p: parent.videoUrl._1080p,
+          };
+        }
+      }
   },
   
 });

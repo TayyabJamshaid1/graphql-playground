@@ -11,6 +11,7 @@ export const schema=`#graphql
         verified: Boolean!
         createdAt: String!
         updatedAt: String!
+        courses: [Course!]!  # Added courses field to User type
     }
 type Course {
     _id: ID!
