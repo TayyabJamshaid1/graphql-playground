@@ -3,32 +3,22 @@ import { helloResolver } from "@/graphql/resolvers/hello.js";
 import { ApolloServer } from "@apollo/server";
 import { loadFilesSync } from "@graphql-tools/load-files";
 import { mergeResolvers } from "@graphql-tools/merge";
+import { schema } from "./schema/schema";
+import { resolverGraphql } from "./resolvers/resolver";
+import { startStandaloneServer } from "@apollo/server/standalone";
 
-export const connectGraphQL = () => {
-  const typeDefs = loadFilesSync("src/graphql/schema/**/*.graphql");
-
-  const server = new ApolloServer({
-    typeDefs,
-    resolvers: mergeResolvers([helloResolver]),
-    formatError: (err) => {
-      // Default error response
-
-      console.log(err);
-      let statusCode = 500;
-
-      // Map GraphQL error codes to HTTP status codes
-      if (err.extensions?.code === "UNAUTHENTICATED") {
-        statusCode = 401;
-      } else if (err.extensions?.code === "FORBIDDEN") {
-        statusCode = 403;
-      }
-
-      return {
-        message: err.message,
-        code: err.extensions?.code || "INTERNAL_SERVER_ERROR",
-        statusCode,
-      };
-    },
+export const connectGraphQL = (port: number) => {
+ 
+ const server = new ApolloServer({
+   typeDefs: schema,
+   resolvers: resolverGraphql,
+ });
+startStandaloneServer(server, { listen: { port } })
+  .then(({ url }) => {
+    console.log(`Server is running at ${url}`);
+  })
+  .catch((err) => {
+    console.error("Failed to start server:", err);
   });
 
   return server;

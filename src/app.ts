@@ -1,9 +1,6 @@
-import { ApolloServer } from "@apollo/server";
-import { startStandaloneServer } from "@apollo/server/standalone";
 import dotenv from "dotenv";
-import { schema } from "./graphql/schema/schema";
 import { ConnectToDatabase } from "./db";
-import { resolverGraphql } from "./graphql/resolvers/resolver";
+import { connectGraphQL } from "./graphql/graphql";
 
 dotenv.config({ path: "./.env" });
 
@@ -17,14 +14,4 @@ ConnectToDatabase()
     console.error("Failed to connect to MongoDB:", err);
   });
 
-const server = new ApolloServer({
-  typeDefs: schema,
-  resolvers: resolverGraphql,
-});
-startStandaloneServer(server, { listen: { port } })
-  .then(({ url }) => {
-    console.log(`Server is running at ${url}`);
-  })
-  .catch((err) => {
-    console.error("Failed to start server:", err);
-  });
+ connectGraphQL(port)
