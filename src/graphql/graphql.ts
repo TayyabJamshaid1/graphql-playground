@@ -13,13 +13,13 @@ export const connectGraphQL = (port: number) => {
    typeDefs: schema,
    resolvers: resolverGraphql,
  });
-startStandaloneServer(server, { listen: { port } })
-  .then(({ url }) => {
-    console.log(`Server is running at ${url}`);
-  })
-  .catch((err) => {
-    console.error("Failed to start server:", err);
-  });
+// startStandaloneServer(server, { listen: { port } })
+//   .then(({ url }) => {
+//     console.log(`Server is running at ${url}`);
+//   })
+//   .catch((err) => {
+//     console.error("Failed to start server:", err);
+//   });
 
   return server;
 };
