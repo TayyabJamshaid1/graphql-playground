@@ -24,3 +24,32 @@ export const connectGraphQL = (port: number) => {
   return server;
 };
 
+//appolo server data example
+// query ExampleQuery{
+// #  users {
+// #   email
+// #   courses {
+// #     instructor {
+// #       email
+// #     }
+// #   }
+// #  }
+//  users {
+//   name
+//   email
+//  }
+// }
+
+// # mutation MyMutation($name: String!, $password: String!, $email: String!, $googleId: String!, $role: String!, $avatar: String!, $verified: Boolean!){
+// #   createNewUser(name: $name, password: $password, email: $email, googleId: $googleId, role: $role, avatar: $avatar, verified: $verified) {
+// #     _id
+// #     name
+// #     email
+// #     role
+// #     verified
+// #     avatar
+// #     createdAt
+// #     updatedAt
+// #   }
+// # }
+

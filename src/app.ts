@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import { ConnectToDatabase } from "./db";
 import { connectGraphQL } from "./graphql/graphql";
-import express, { Request,Response,NextFunction } from "express"
+import express, { Request, Response, NextFunction } from "express";
 import { expressMiddleware } from "@as-integrations/express5";
 import morgan from "morgan";
 import cors from "cors";
@@ -21,23 +21,23 @@ ConnectToDatabase()
 let graphQLServer = connectGraphQL(port);
 await graphQLServer.start();
 const app = express();
-const isAdmin=(req:Request,res:Response,next:NextFunction)=>{
-  let user={role:"aadmin"}
-  if (user.role==="admin"){
-    next()
-  }else{
-    res.status(403).json({message:"Forbidden"})
+const isAdmin = (req: Request, res: Response, next: NextFunction) => {
+  let user = { role: "admin" };
+  if (user.role === "admin") {
+    next();
+  } else {
+    res.status(403).json({ message: "Forbidden" });
   }
-}
- app.use(express.json())
- app.use(express.urlencoded({ extended: true }))
- app.use(cors({origin:"*",credentials:true}))
- app.use(morgan("dev")) //to see api fetch time in console and to tell about request type like get,post etc
- app.use("/graphql",isAdmin,expressMiddleware(graphQLServer)) 
- app.get("*",(req:Request,res:Response)=>{
-  res.status(404).json({message:"Not Found"})
- })
- app.use(errorMiddleware)
- app.listen(port, () => {
+};
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors({ origin: "*", credentials: true }));
+app.use(morgan("dev")); //to see api fetch time in console and to tell about request type like get,post etc
+app.use("/graphql", isAdmin, expressMiddleware(graphQLServer));
+app.get("*path", (req: Request, res: Response) => {
+  res.status(404).json({ message: "Not Found" });
+});
+app.use(errorMiddleware);
+app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
