@@ -3,14 +3,7 @@ import { startStandaloneServer } from "@apollo/server/standalone";
 import dotenv from "dotenv";
 import { schema } from "./graphql/schema/schema";
 import { ConnectToDatabase } from "./db";
-import UserModel from "./models/user.model";
-import { createNewUser, findAllUsers } from "./controllers/users";
-import {
-  findAllCourses,
-  findAllLectures,
-  findCourseById,
-  findUserCourses,
-} from "./controllers/course";
+import { resolverGraphql } from "./graphql/resolvers/resolver";
 
 dotenv.config({ path: "./.env" });
 
@@ -26,38 +19,7 @@ ConnectToDatabase()
 
 const server = new ApolloServer({
   typeDefs: schema,
-  resolvers: {
-    Mutation: {
-      createNewUser: createNewUser,
-    },
-    Query: {
-      users: findAllUsers,
-      courses: findAllCourses,
-      course: findCourseById,
-      lectures: findAllLectures,
-    },
-    User: {
-      courses: findUserCourses,
-    },
-    Course: {
-      instructor: async (parent) => {
-        const user = await UserModel.findById(parent.instructor);
-        return user;
-      },
-    },
-
-    Lecture: {
-      videoUrl: (parent) => {
-        console.log(parent.videoUrl);
-
-        return {
-          _480p: parent.videoUrl._480p,
-          _720p: parent.videoUrl._720p,
-          _1080p: parent.videoUrl._1080p,
-        };
-      },
-    },
-  },
+  resolvers: resolverGraphql,
 });
 startStandaloneServer(server, { listen: { port } })
   .then(({ url }) => {

@@ -50,11 +50,6 @@ type VideoUrl{
         createdAt: String!
         updatedAt: String!
     }
-type NewUser{
-       name: String!
-        age: String!
-             gender: String!
-}
   type Query {
     hello: String
     wow:String
@@ -62,7 +57,6 @@ type NewUser{
     courses:[Course]
     lectures:[Lecture]
     course(id: ID!): Course
-    newUser:NewUser
   }
   type Mutation {
     createNewUser(name: String!, password: String!, email: String!, googleId: String!, role: String!, avatar: String!, verified: Boolean!): User!
